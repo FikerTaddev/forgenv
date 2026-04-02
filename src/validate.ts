@@ -1,25 +1,38 @@
 import type { EnvSchema } from "./types.ts";
-
+import { log } from "./helper/chalk.ts";
 export function validateEnv(env: any, schema: EnvSchema) {
   for (const key in schema) {
-    const expectedType = schema[key];
+    const rule = schema[key]; 
     const value = env[key];
 
-    if (value === undefined) {
-      throw new Error(`Missing env var: ${key}`);
+    if (rule === undefined) {
+      log.error("Unknown Key" , `Unknown env var: ${key}`)
+      return 
+    }
+    if (rule.type == undefined) {
+      log.error("Unknown Type" , `Unknown Type: ${key}`)
+      return 
     }
 
-    if (expectedType === "number") {
+    if (rule.required && value === undefined) { // Check if the variable is required 
+      log.error("Missing Env Variable",`Missing required env var: ${key}`)
+      return
+    }
+
+    if (rule.type === "number") { 
       if (isNaN(Number(value))) {
-        throw new Error(`Invalid number: ${key}`);
+        log.error("Invalid Number Type",`Invalid number: ${key}`)
+        return
       }
     }
 
-    if (expectedType === "boolean") {
+    if (rule.type === "boolean") { 
       if (value !== "true" && value !== "false") {
-        throw new Error(`Invalid boolean: ${key}`);
+        log.error("Invalid Boolean Type",`Invalid boolean: ${key}`)
+        return
       }
     }
+      log.success(`EnvGuard: ${key} successfully injected`)
   }
 
   return true;
