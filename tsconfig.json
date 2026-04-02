@@ -8,8 +8,8 @@
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
+     "types": ["jest"],
     "target": "esnext",
-    "types": [],
     "emitDeclarationOnly": true,
     "allowImportingTsExtensions":true,
     // For nodejs:
