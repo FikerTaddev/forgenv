@@ -10,7 +10,7 @@ export function validateEnv(env: Record<string, any>, schema: EnvSchema) {
     if (!schema[key]) {
       log.error("Unknown Env Variable", `Unexpected env var: ${key}`);
       return false;
-    }
+    } 
   }
 
   // 2. Validate schema rules
