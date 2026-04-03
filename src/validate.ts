@@ -1,38 +1,62 @@
 import type { EnvSchema } from "./types.ts";
 import { log } from "./helper/chalk.ts";
-export function validateEnv(env: any, schema: EnvSchema) {
-  for (const key in schema) {
-    const rule = schema[key]; 
+
+export function validateEnv(env: Record<string, any>, schema: EnvSchema) {
+  const envKeys = Object.keys(env);
+  const schemaKeys = Object.keys(schema);
+
+  // 1. Detect unknown env vars (STRICT MODE)
+  for (const key of envKeys) {
+    if (!schema[key]) {
+      log.error("Unknown Env Variable", `Unexpected env var: ${key}`);
+      return false;
+    }
+  }
+
+  // 2. Validate schema rules
+  for (const key of schemaKeys) {
+    const rule = schema[key];
     const value = env[key];
 
-    if (rule === undefined) {
-      log.error("Unknown Key" , `Unknown env var: ${key}`)
-      return 
-    }
-    if (rule.type == undefined) {
-      log.error("Unknown Type" , `Unknown Type: ${key}`)
-      return 
+    if (!rule?.type) {
+      log.error("Invalid Schema", `Missing type for: ${key}`);
+      return false;
     }
 
-    if (rule.required && value === undefined) { // Check if the variable is required 
-      log.error("Missing Env Variable",`Missing required env var: ${key}`)
-      return
+    // required check
+    if (rule.required && (value === undefined || value === "")) {
+      log.error("Missing Env Variable", `Missing required env var: ${key}`);
+      return false;
     }
 
-    if (rule.type === "number") { 
+    // skip validation if optional and missing
+    if (value === undefined) continue;
+
+    // STRING
+    if (rule.type === "string") {
+      if (typeof value !== "string") {
+        log.error("Invalid String Type", `Invalid string: ${key}`);
+        return false;
+      }
+    }
+
+    // NUMBER
+    if (rule.type === "number") {
       if (isNaN(Number(value))) {
-        log.error("Invalid Number Type",`Invalid number: ${key}`)
-        return
+        log.error("Invalid Number Type", `Invalid number: ${key}`);
+        return false;
       }
     }
 
-    if (rule.type === "boolean") { 
+    // BOOLEAN
+    if (rule.type === "boolean") {
       if (value !== "true" && value !== "false") {
-        log.error("Invalid Boolean Type",`Invalid boolean: ${key}`)
-        return
+        log.error("Invalid Boolean Type", `Invalid boolean: ${key}`);
+        return false;
       }
     }
-      log.success(`EnvGuard: ${key} successfully injected`)
+
+    log.success(`EnvGuard: ${key} validated`);
   }
 
   return true;
