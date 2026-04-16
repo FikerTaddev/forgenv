@@ -1,7 +1,10 @@
 import type { EnvSchema } from "./types.ts";
 import { log } from "./helper/chalk.ts";
 
-export function validateEnv(env: Record<string, any>, schema: EnvSchema) {
+
+
+
+export function validateEnv(env: Record<string, any> , schema: EnvSchema) {
   const envKeys = Object.keys(env);
   const schemaKeys = Object.keys(schema);
 
@@ -27,6 +30,15 @@ export function validateEnv(env: Record<string, any>, schema: EnvSchema) {
     if (rule.required && (value === undefined || value === "")) {
       log.error("Missing Env Variable", `Missing required env var: ${key}`);
       return false;
+    }
+
+    // length check
+    if (rule.length) {
+      let len = value.length
+      if (len != rule.length) {
+        log.error("Invalid Schema",`Length for ${key} is supposed to be ${rule.length} but got ${value.length}`)
+        return false;
+      }
     }
 
     // skip validation if optional and missing
