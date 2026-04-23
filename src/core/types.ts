@@ -45,6 +45,18 @@ type EnvField =
   | UrlField
   | FormatField
   | EnumField<readonly PrimitiveType[]>;
+
+ export type InferField<T> =
+  T extends { enum: readonly (infer U)[] } ? U :
+  T extends { type: "number" } ? number :
+  T extends { type: "boolean" } ? boolean :
+  T extends { type: "string" } ? string :
+  T extends { default: infer D } ? D :
+  string;
+
+  export type InferSchema<T> = {
+    [K in keyof T ] :InferField<T[K]>
+  }
 export type ErrorType =
   | "TYPE_MISMATCH"
   | "INVALID_NUMBER"
@@ -82,6 +94,4 @@ export type EnvGuardError = {
 
 export type EnvSchema = Record<string, EnvField>;
 
-let a : EnvSchema = {
-  H:{enum : []}
-}
+
