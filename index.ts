@@ -4,7 +4,7 @@ import { validateWithCache } from "./src/helper/Cache/validateCache.js";
 import { createEnv } from "./src/runtime/envProxy.js";
 
 export function defineEnv<T extends Record<string, any>>(
-  env: string[],
+  env: string[] = [".env"],
   userSchema: T,
 ): InferSchema<T> {
   const rawEnv = loadEnv(env);
