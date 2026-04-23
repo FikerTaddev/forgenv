@@ -1,5 +1,6 @@
 import type { EnvGuardError } from "../types.ts";
-import { log } from "../helper/chalk.ts";
+import consola from "consola";
+import signale from "signale";
 
 export const std: any = {};
 
@@ -23,7 +24,7 @@ std.FormatError = (err: EnvGuardError): string => {
   return `${err.type} :: ${err.Key}`;
 };
 
-
 std.LogError = (err: EnvGuardError) => {
-  log.error(std.FormatError(err), err.message);
+  consola.error(std.FormatError(err));
+  signale.error(err.message);
 };

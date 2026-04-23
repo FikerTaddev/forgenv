@@ -1,6 +1,7 @@
 import type { EnvSchema } from "./types.ts";
 import type { EnvGuardError } from "./types.ts";
 import { std } from "./stdout/Error.ts";
+import { normalize } from "./helper/helper.ts";
 export function validateEnv(
   env: Record<string, any>,
   schema: EnvSchema,
@@ -40,13 +41,12 @@ export function validateEnv(
         ? field.enum
         : field.enum.map((v) => String(v).toLowerCase());
 
-      const actual = field.caseSensetive ? value : String(value).toLowerCase();
-
+      const actual = field.caseSensetive ? value : normalize(value.toLowerCase());
       if (!allowed.includes(actual)) {
         throw std.CreateError({
           Key: key,
           type: "INVALID_ENUM_VALUE",
-          message: `Invalid value for ${key}  expected ${field.enum.join(", ")} but got ${value} `,
+          message: `Invalid value for ${key}  expected '${field.enum.join(" or ")}' but got '${value}' `,
           expected: field.enum,
           received: value,
         });
