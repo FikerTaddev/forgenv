@@ -1,10 +1,43 @@
-export type EnvType = "string" | "boolean" | "number";
-
-export type EnvRule = {
-  type: EnvType;
+export type PrimitiveType = string | boolean | number;
+export type ProtocolsType = "http" | "https" | "ftp";
+type BaseField = {
   required?: boolean;
   length?: number;
+  sensetive?: boolean;
 };
+
+type EnumField<T extends readonly PrimitiveType[]> = BaseField & {
+  enum: T;
+  default?: T[number];
+  caseSensetive?: boolean;
+};
+
+type NumberField = BaseField & {
+  type: "number";
+  default?: number;
+};
+type StringField = BaseField & {
+  type: "string";
+  minLength?: number;
+  maxLength?: number;
+  default?: string;
+};
+type BooleanField = BaseField & {
+  type: "boolean";
+  default?: boolean;
+};
+type UrlField = BaseField & {
+  type: "url";
+  protocols?: ProtocolsType[];
+  hostname?: string;
+  default?:URL;
+};
+type EnvField =
+  | StringField
+  | NumberField
+  | BooleanField
+  | UrlField
+  | EnumField<readonly PrimitiveType[]>;
 export type ErrorType =
   | "TYPE_MISMATCH"
   | "INVALID_NUMBER"
@@ -23,6 +56,7 @@ export type ErrorType =
   | "UNSAFE_IN_PRODUCTION"
   | "MISSING_PROD_REQUIRED_KEY"
   | "DEPRECATED_KEY"
+  | "INAVLID_URL"
   | "INVALID_SCHEMA";
 
 export type EnvGuardError = {
@@ -39,4 +73,8 @@ export type EnvGuardError = {
   rule?: string; //which schema rule triggered the error
 };
 
-export type EnvSchema = Record<string, EnvRule>;
+export type EnvSchema = Record<string, EnvField>;
+
+let a : EnvSchema = {
+  H:{enum : []}
+}

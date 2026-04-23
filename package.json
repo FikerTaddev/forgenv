@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
-    "start":"ts-node app.ts"
+    "start": "ts-node app.ts"
   },
   "repository": {
     "type": "git",
@@ -21,8 +21,8 @@
   "homepage": "https://github.com/FikerTaddev/Envguard#readme",
   "dependencies": {
     "chalk": "^5.6.2",
-    "dotenv": "^17.3.1",
-    "zod": "^4.3.6"
+    "consola": "^3.4.2",
+    "dotenv": "^17.3.1"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

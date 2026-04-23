@@ -1,104 +1,158 @@
 import type { EnvSchema } from "./types.ts";
-import { log } from "./helper/chalk.ts";
 import type { EnvGuardError } from "./types.ts";
 import { std } from "./stdout/Error.ts";
-
 export function validateEnv(
   env: Record<string, any>,
   schema: EnvSchema,
-): EnvGuardError | boolean {
-  const envKeys = Object.keys(env);
-  const schemaKeys = Object.keys(schema);
+): Record<string, any> | EnvGuardError {
+  const result: Record<string, any> = {};
 
-  // 1. Detect unknown env vars (STRICT MODE)
-  for (const key of envKeys) {
-    if (!schema[key]) {
-      throw std.CreateError({
-        Key: key,
-        type: "INVALID_FORMAT",
-        message: `Unexpected env var: ${key}`,
-        received: env[key],
-      });
-    }
-  }
-
-  // 2. Validate schema rules
-  for (const key of schemaKeys) {
-    const rule = schema[key];
+  for (const key in schema) {
+    const field = schema[key]!;
     const value = env[key];
 
-    if (!rule?.type) {
-      throw std.CreateError({
-        Key: key,
-        type: "INVALID_SCHEMA",
-        message: `Missing type for: ${key}`,
-        received: env[key],
-      });
-    }
+    // ========================
+    // MISSING VALUE HANDLING
+    // ========================
+    if (value === undefined || value === "") {
+      if (field.default !== undefined) {
+        result[key] = field.default;
+        continue;
+      }
 
-    // required check
-    if (rule.required && (value === undefined || value === "")) {
-      throw std.CreateError({
-        Key: key,
-        type: "MISSING_KEY",
-        message: `Missing required env var: ${key}`,
-        received: env[key],
-      });
-    }
-
-    // length check
-    if (rule.length) {
-      let len = value.length;
-      if (len != rule.length) {
+      if (field.required) {
         throw std.CreateError({
           Key: key,
-          type: "INVALID_SCHEMA",
-          message: `Length for ${key} is supposed to be ${rule.length} but got ${value.length}`,
-          received: env[key],
+          type: "MISSING_KEY",
+          message: `Missing required env var: ${key}`,
+          received: value,
         });
       }
+
+      continue;
     }
 
-    // skip validation if optional and missing
-    if (value === undefined) continue;
+    // ========================
+    // ENUM VALIDATION
+    // ========================
+    if ("enum" in field) {
+      const allowed = field.caseSensetive
+        ? field.enum
+        : field.enum.map((v) => String(v).toLowerCase());
 
-    // STRING
-    if (rule.type === "string") {
-      if (typeof value !== "string") {
-        log.error("Invalid String Type", `Invalid string: ${key}`);
+      const actual = field.caseSensetive ? value : String(value).toLowerCase();
+
+      if (!allowed.includes(actual)) {
         throw std.CreateError({
           Key: key,
-          type: "TYPE_MISMATCH",
-          message: `Invalid string: ${key}`,
-          received: env[key],
+          type: "INVALID_ENUM_VALUE",
+          message: `Invalid value for ${key}  expected ${field.enum.join(", ")} but got ${value} `,
+          expected: field.enum,
+          received: value,
         });
       }
+
+      result[key] = value;
+      continue;
     }
 
-    // NUMBER
-    if (rule.type === "number") {
-      if (isNaN(Number(value))) {
-        throw std.CreateError({
-          Key: key,
-          type: "TYPE_MISMATCH",
-          message: `Invalid number: ${key}`,
-          received: env[key],
-        });
-      }
-    }
+    // ========================
+    // TYPE VALIDATION
+    // ========================
+    if ("type" in field) {
+      switch (field.type) {
+        case "string": {
+          if (typeof value !== "string") {
+            throw std.CreateError({
+              Key: key,
+              type: "TYPE_MISMATCH",
+              message: `Expected string for ${key}`,
+              received: value,
+            });
+          }
 
-    // BOOLEAN
-    if (rule.type === "boolean") {
-      if (value !== "true" && value !== "false") {
-        throw std.CreateError({
-          Key: key,
-          type: "TYPE_MISMATCH",
-          message: `Invalid boolean: ${key}`,
-          received: env[key],
-        });
+          if (field.length && value.length !== field.length) {
+            throw std.CreateError({
+              Key: key,
+              type: "VALUE_TOO_LONG",
+              message: `Expected length ${field.length}`,
+              received: value,
+            });
+          }
+
+          if (field.minLength && value.length < field.minLength) {
+            throw std.CreateError({
+              Key: key,
+              type: "VALUE_TOO_SHORT",
+              message: `Too short for ${key}`,
+              received: value,
+            });
+          }
+
+          if (field.maxLength && value.length > field.maxLength) {
+            throw std.CreateError({
+              Key: key,
+              type: "VALUE_TOO_LONG",
+              message: `Too long for ${key}`,
+              received: value,
+            });
+          }
+
+          result[key] = value;
+          break;
+        }
+
+        case "number": {
+          const num = Number(value);
+
+          if (Number.isNaN(num)) {
+            throw std.CreateError({
+              Key: key,
+              type: "INVALID_NUMBER",
+              message: `Invalid number for ${key}`,
+              received: value,
+            });
+          }
+
+          result[key] = num;
+          break;
+        }
+        // -------------------------
+        // URL
+        // ---------------
+        // ----------
+        case "url": {
+          try {
+            new URL(value);
+          } catch {
+            throw std.CreateError({
+              Key: key,
+              type: "INVALID_URL",
+              message: `Invalid URL for ${key}. Expected valid URL like ${field.protocols}://${field.hostname} but got ${value}`,
+              received: value,
+            });
+          }
+
+          result[key] = value;
+          break;
+        }
+
+        case "boolean": {
+          if (value !== "true" && value !== "false") {
+            throw std.CreateError({
+              Key: key,
+              type: "INVALID_BOOLEAN",
+              message: `Invalid boolean for ${key}`,
+              received: value,
+            });
+          }
+
+          result[key] = value === "true";
+          break;
+        }
       }
     }
   }
 
-  return true;
+  return result;
 }

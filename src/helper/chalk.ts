@@ -7,10 +7,13 @@ export const log = {
 
   error(title: string, msg: string) {
     console.log(`${chalk.red("✖")} ${chalk.redBright(title)}`);
-    console.log(   `${chalk.gray(msg)}`);
+    console.log(`${chalk.gray(msg)}`);
   },
 
   info(msg: string) {
-    console.log(`${chalk.blue("ℹ")} ${msg}`);
+    console.log(`${chalk.cyanBright("ℹ")} ${chalk.blue(msg)}`);
+  },
+  warn(msg: string) {
+    console.log(`${chalk.yellow("!")} ${msg}`);
   },
 };
