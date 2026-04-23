@@ -136,7 +136,85 @@ export function validateEnv(
           result[key] = value;
           break;
         }
+        case "format": {
+          const str = String(value);
 
+          switch (field.format) {
+            case "email": {
+              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              if (!emailRegex.test(str)) {
+                throw std.CreateError({
+                  Key: key,
+                  type: "INVALID_EMAIL",
+                  message: `Invalid email format for ${key}`,
+                  received: value,
+                });
+              }
+              break;
+            }
+
+            case "uuid": {
+              const uuidRegex =
+                /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+              if (!uuidRegex.test(str)) {
+                throw std.CreateError({
+                  Key: key,
+                  type: "INVALID_FORMAT",
+                  message: `Invalid UUID for ${key}`,
+                  received: value,
+                });
+              }
+              break;
+            }
+
+            case "slug": {
+              const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+              if (!slugRegex.test(str)) {
+                throw std.CreateError({
+                  Key: key,
+                  type: "INVALID_FORMAT",
+                  message: `Invalid slug for ${key}`,
+                  received: value,
+                });
+              }
+              break;
+            }
+
+            case "ip": {
+              const ipRegex =
+                /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
+
+              if (!ipRegex.test(str)) {
+                throw std.CreateError({
+                  Key: key,
+                  type: "INVALID_FORMAT",
+                  message: `Invalid IP address for ${key}`,
+                  received: value,
+                });
+              }
+              break;
+            }
+
+            case "url": {
+              try {
+                new URL(str);
+              } catch {
+                throw std.CreateError({
+                  Key: key,
+                  type: "INVALID_URL",
+                  message: `Invalid URL for ${key}`,
+                  received: value,
+                });
+              }
+              break;
+            }
+          }
+
+          result[key] = str;
+          break;
+        }
         case "boolean": {
           if (value !== "true" && value !== "false") {
             throw std.CreateError({

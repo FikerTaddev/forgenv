@@ -1,5 +1,6 @@
 export type PrimitiveType = string | boolean | number;
 export type ProtocolsType = "http" | "https" | "ftp";
+export type FormatType = "email" | "uuid" | "slug" | "ip" | "url";
 type BaseField = {
   required?: boolean;
   length?: number;
@@ -32,11 +33,17 @@ type UrlField = BaseField & {
   hostname?: string;
   default?:URL;
 };
+type FormatField = BaseField & {
+  type: "format";
+  format: FormatType;
+  default?:typeof String;
+};
 type EnvField =
   | StringField
   | NumberField
   | BooleanField
   | UrlField
+  | FormatField
   | EnumField<readonly PrimitiveType[]>;
 export type ErrorType =
   | "TYPE_MISMATCH"
