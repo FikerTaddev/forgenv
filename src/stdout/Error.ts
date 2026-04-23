@@ -1,4 +1,4 @@
-import type { EnvGuardError } from "../core/types.ts";
+import type { EnvGuardError } from "../core/types.js";
 import consola from "consola";
 import signale from "signale";
 
