@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 export function normalize ( val:any) {
  if (typeof val !== "string") return val;
 
@@ -14,3 +15,4 @@ export function normalize ( val:any) {
  }
    return val;
 }
+
