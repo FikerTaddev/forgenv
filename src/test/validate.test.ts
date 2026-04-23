@@ -1,5 +1,5 @@
-import { validateEnv } from "../validate.ts";
-import type { EnvSchema } from "../types.ts";
+import { validateEnv } from "../core/validate.ts";
+import type { EnvSchema } from "../core/types.ts";
 import { describe, it, expect  } from "vitest";
 
 describe("validateEnv", () => {

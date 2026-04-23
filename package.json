@@ -21,7 +21,6 @@
   "homepage": "https://github.com/FikerTaddev/Envguard#readme",
   "dependencies": {
     "consola": "^3.4.2",
-    "dotenv": "^17.3.1",
     "signale": "^1.4.0"
   },
   "devDependencies": {

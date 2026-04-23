@@ -1,7 +1,7 @@
 import type { EnvSchema } from "./types.ts";
 import type { EnvGuardError } from "./types.ts";
-import { std } from "./stdout/Error.ts";
-import { normalize } from "./helper/helper.ts";
+import { std } from "../stdout/Error.ts";
+import { normalize } from "../helper/helper.ts";
 export function validateEnv(
   env: Record<string, any>,
   schema: EnvSchema,
