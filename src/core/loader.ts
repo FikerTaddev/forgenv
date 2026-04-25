@@ -1,5 +1,5 @@
 import fs from "fs";
-
+import path from "path";
 import { existsSync, readFileSync } from "fs";
 
 export function dotEnv(path: string) {
@@ -41,4 +41,21 @@ export function loadEnv(files: string[] = [".env"]) {
   }
 
   return merged;
+}
+
+export async function loadSchema(schemaPath: string) {
+  const resolved = path.resolve(process.cwd(), schemaPath);
+
+  try {
+    const mod = await import(resolved);
+    const schema = mod.default ?? mod;
+
+    if (!schema || typeof schema !== "object") {
+      throw new Error("Invalid schema export");
+    }
+
+    return schema;
+  } catch (err: any) {
+    throw new Error(`Failed to load schema: ${err.message}`);
+  }
 }

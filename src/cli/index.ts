@@ -1,44 +1,38 @@
-#!usr/bin/env node
+#!/usr/bin/env node
 
-import { defineEnv } from "../../index.js";
-import schema from "../schema.js"
+import { parseFlags } from "./parser.js";
+import { runCheck } from "./cmd/check.js";
+import { RunInit } from "./cmd/init.js";
+import { std } from "../stdout/Error.js";
 
 
 const args = process.argv.slice(2);
 const command = args[0];
-
-function runCheck() {
+(async () => {
   try {
-    defineEnv([".env"],schema);
-    console.log("✅ EnvGuard: environment is valid");
-    process.exit(0);
-  } catch (err: any) {
-    console.error("❌ EnvGuard error:");
-    console.error(err);
-    process.exit(1);
-  }
-}
+    switch (command) {
+      case "check":
+        await runCheck(parseFlags(args));
+        break;
 
-function runInit() {
-  console.log("📦 EnvGuard init not implemented yet");
-}
+      case "init":
+        await RunInit();
+        break;
 
-switch (command) {
-  case "check":
-    runCheck();
-    break;
-
-  case "init":
-    runInit();
-    break;
-
-  default:
-    console.log(`
+      default:
+        `console.log(
 EnvGuard CLI
 
 Commands:
   check   Validate environment
   init    Scaffold env setup
-`);
+`;
+        process.exit(1);
+    }
+
+    process.exit(0);
+  } catch (err) {
+    console.error(std.LogError(err));
     process.exit(1);
-}
+  }
+})();

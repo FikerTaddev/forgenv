@@ -53,7 +53,9 @@ type EnvField =
   T extends { type: "string" } ? string :
   T extends { default: infer D } ? D :
   string;
-
+export type Result<T> =
+  | { success: true; data: T }
+  | { success: false; error: EnvGuardError };
   export type InferSchema<T> = {
     [K in keyof T ] :InferField<T[K]>
   }
