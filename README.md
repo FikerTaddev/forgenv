@@ -1,6 +1,6 @@
-# EnvGuard
+# forgenv
 
-EnvGuard is a lightweight environment validation tool for Node.js and TypeScript projects. It ensures your environment variables are correctly defined before your app starts.
+forgenv is a lightweight environment validation tool for Node.js and TypeScript projects. It ensures your environment variables are correctly defined before your app starts.
 ## WIP 
 
 ## Installation
@@ -46,7 +46,7 @@ forgenv check --schema ./env.schema.ts --env .env
 ```
 ## Example Output
 ```Error
-❌ EnvGuard failed
+❌ forgenv failed
 
 Invalid value for NODE_ENV  
 Expected: dev | prod | test  
