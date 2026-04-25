@@ -6,12 +6,12 @@ EnvGuard is a lightweight environment validation tool for Node.js and TypeScript
 ## Installation
 
 ```bash 
-npm install envguard
+npm install forgenv
 ```
 
 or
 ```bash 
-npm install -D envguard
+npm install -D forgenv
 ```
 ## Schema Setup
 
@@ -42,7 +42,7 @@ DATABASE_URL=postgres://localhost:5432/db
 ```
 ## CLI Usage
 ```bash
-envguard check --schema ./env.schema.ts --env .env
+forgenv check --schema ./env.schema.ts --env .env
 ```
 ## Example Output
 ```Error
@@ -59,7 +59,7 @@ Received: staging
 
 Used in CI/CD like:
 ```bash
-envguard check && echo "OK"
+forgenv check && echo "OK"
 ```
 ## Supported Types
 
