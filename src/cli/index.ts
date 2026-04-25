@@ -21,7 +21,7 @@ const command = args[0];
 
       default:
         `console.log(
-EnvGuard CLI
+forgenv CLI
 
 Commands:
   check   Validate environment

@@ -1,11 +1,11 @@
 
-import type { EnvGuardError ,EnvSchema} from "../helper/types.js";
+import type { forgenvError ,EnvSchema} from "../helper/types.js";
 import { std } from "../stdout/Error.js";
 import { normalize } from "../helper/helper.js";
 export function validateEnv(
   env: Record<string, any>,
   schema: EnvSchema,
-): Record<string, any> | EnvGuardError {
+): Record<string, any> | forgenvError {
   const result: Record<string, any> = {};
 
   for (const key in schema) {

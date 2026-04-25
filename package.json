@@ -1,5 +1,5 @@
 {
-  "name": "envguard",
+  "name": "forgenv",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,16 +12,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FikerTaddev/Envguard.git"
+    "url": "git+https://github.com/FikerTaddev/forgenv.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/FikerTaddev/Envguard/issues"
+    "url": "https://github.com/FikerTaddev/forgenv/issues"
   },
-  "homepage": "https://github.com/FikerTaddev/Envguard#readme",
+  "homepage": "https://github.com/FikerTaddev/forgenv#readme",
   "dependencies": {
     "consola": "^3.4.2",
     "signale": "^1.4.0"
