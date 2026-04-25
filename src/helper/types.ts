@@ -53,7 +53,9 @@ type EnvField =
   T extends { type: "string" } ? string :
   T extends { default: infer D } ? D :
   string;
-
+export type Result<T> =
+  | { success: true; data: T }
+  | { success: false; error: forgenvError };
   export type InferSchema<T> = {
     [K in keyof T ] :InferField<T[K]>
   }
@@ -78,7 +80,7 @@ export type ErrorType =
   | "INAVLID_URL"
   | "INVALID_SCHEMA";
 
-export type EnvGuardError = {
+export type forgenvError = {
   Key: string;
   type: ErrorType;
   message: string;
