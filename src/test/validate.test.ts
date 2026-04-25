@@ -33,7 +33,7 @@ describe("validateEnv", () => {
     const env = { NUMBER_VAR: "not-a-number" };
 
     expect(() => validateEnv(env, schema)).toThrow(
-      "Invalid number: NUMBER_VAR"
+      "Invalid number for NUMBER_VAR"
     );
   });
 
@@ -45,7 +45,7 @@ describe("validateEnv", () => {
     const env = { BOOLEAN_VAR: "not-a-boolean" };
 
     expect(() => validateEnv(env, schema)).toThrow(
-      "Invalid boolean: BOOLEAN_VAR"
+      "Invalid boolean for BOOLEAN_VAR"
     );
   });
 
