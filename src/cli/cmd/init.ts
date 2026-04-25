@@ -1,7 +1,7 @@
 import path from "node:path";
 import fs from "fs";
 
-export function RunInit() {
+export async function RunInit() {
   const ENV_EXAMPLE_DATA = `
    #forgenv
    PORT=3000
