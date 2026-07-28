@@ -36,6 +36,7 @@ jobs:
       - name: Verify Demo App Integration
         run: |
           cd examples/demo-app
+          cp .env.example .env
           npm install
           npx tsc
           node dist/index.js
