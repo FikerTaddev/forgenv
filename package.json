@@ -1,31 +1,36 @@
 {
-  "name": "envguard",
+  "name": "forgenv",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "start": "ts-node index.ts"
+  },
+  "bin":{
+    "forgenv": "dist/cli/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FikerTaddev/Envguard.git"
+    "url": "git+https://github.com/FikerTaddev/forgenv.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/FikerTaddev/Envguard/issues"
+    "url": "https://github.com/FikerTaddev/forgenv/issues"
   },
-  "homepage": "https://github.com/FikerTaddev/Envguard#readme",
+  "homepage": "https://github.com/FikerTaddev/forgenv#readme",
   "dependencies": {
-    "chalk": "^5.6.2",
-    "dotenv": "^17.3.1",
-    "zod": "^4.3.6"
+    "consola": "^3.4.2",
+    "signale": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
+    "@types/signale": "^1.4.7",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.2"
+    "typescript": "^5.2.2",
+    "vitest": "^4.1.2"
   }
 }

@@ -80,3 +80,4 @@ Early-stage CLI tool focused on:
 - CLI usability
 - Schema-driven validation
 - Safe startup enforcement
+

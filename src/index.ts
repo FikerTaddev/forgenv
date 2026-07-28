@@ -1,18 +1,15 @@
-import { loadEnv } from "./loader.ts";
-import { validateEnv } from "./validate.ts";
-import { log } from "./helper/chalk.ts";
+import { loadEnv } from "./core/loader.js";
+import type { EnvSchema, InferSchema } from "./helper/types.js";
+import { validateWithCache } from "./helper/Cache/validateCache.js";
+import { createEnv } from "./runtime/envProxy.js";
 
+export function defineEnv<T extends EnvSchema>(
+  env: string[] = [".env"],
+  userSchema: T,
+): InferSchema<T> {
+  const rawEnv = loadEnv(env);
 
-try {
-  const env = loadEnv();
+  const validated = validateWithCache(rawEnv, userSchema);
 
-  validateEnv(env, {
-    PORT: "number",
-    DEBUG: "boolean",
-  });
-
-  log.success("Environment validated");
-} catch (err: any) {
-  log.error("Env validation failed", err.message);
-  process.exit(1);
+  return createEnv(validated) as InferSchema<T>;
 }
