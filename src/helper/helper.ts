@@ -16,9 +16,9 @@ export function normalize ( val:any) {
    return val;
 }
 
-export function hashEnv(env: Record<string,any>){
-    return crypto
+export function hashEnv(env: Record<string, any>, schema?: any) {
+  return crypto
     .createHash("sha256")
-    .update(JSON.stringify(env))
+    .update(JSON.stringify({ env, schema }))
     .digest("hex");
 }

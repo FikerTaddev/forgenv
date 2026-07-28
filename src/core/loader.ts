@@ -15,12 +15,18 @@ export function dotEnv(filePath: string) {
     if (!trimmed || trimmed.startsWith("#")) continue;
 
     const [key, ...rest] = trimmed.split("=");
-
-    const value = rest.join("=");
-
     if (!key) continue;
 
-    env[key.trim()] = value.trim();
+    let value = rest.join("=").trim();
+
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    env[key.trim()] = value;
   }
 
   return env;

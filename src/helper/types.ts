@@ -65,10 +65,13 @@ type EnvField =
 
 // ---------------- INFERENCE ----------------
 export type InferField<T> =
+  T extends { transform: (...args: any[]) => infer R } ? R :
   T extends { enum: readonly (infer U)[] } ? U :
   T extends { type: "number" } ? number :
   T extends { type: "boolean" } ? boolean :
   T extends { type: "string" } ? string :
+  T extends { type: "url" } ? string :
+  T extends { type: "format" } ? string :
   T extends { default: infer D } ? D :
   string;
 

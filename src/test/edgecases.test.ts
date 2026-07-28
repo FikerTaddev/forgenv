@@ -144,5 +144,34 @@ describe("Edge Case & Future Feature Validation Tests", () => {
       expect(firstRun).toEqual({ PORT: 4000 });
       expect(secondRun).toEqual(firstRun);
     });
+
+    it("should compute different cache key when schema changes for identical env", () => {
+      const env = { PORT: "5000" };
+      const schemaA: EnvSchema = { PORT: { type: "number", min: 1000 } };
+      const schemaB: EnvSchema = { PORT: { type: "number", min: 9000 } };
+
+      expect(validateWithCache(env, schemaA)).toEqual({ PORT: 5000 });
+      expect(() => validateWithCache(env, schemaB)).toThrow("is below minimum 9000");
+    });
+  });
+
+  describe("Quoted Value & Type Coercion Edge Cases", () => {
+    it("should validate native boolean true/false values in schema validation", () => {
+      const schema: EnvSchema = {
+        IS_ACTIVE: { type: "boolean", default: true },
+        IS_DEBUG: { type: "boolean", default: false },
+      };
+
+      const result = validateEnv({}, schema);
+      expect(result).toEqual({ IS_ACTIVE: true, IS_DEBUG: false });
+    });
+
+    it("should fail validation if empty string is passed to required number type", () => {
+      const schema: EnvSchema = {
+        PORT: { type: "number", required: true },
+      };
+
+      expect(() => validateEnv({ PORT: "" }, schema)).toThrow("Missing required env var: PORT");
+    });
   });
 });

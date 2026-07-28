@@ -135,9 +135,10 @@ export function validateEnv(
           }
 
           case "number": {
+            const strVal = String(value).trim();
             const num = Number(value);
 
-            if (Number.isNaN(num)) {
+            if (strVal === "" || Number.isNaN(num)) {
               throw std.CreateError({
                 Key: key,
                 type: "INVALID_NUMBER",
@@ -265,7 +266,11 @@ export function validateEnv(
           }
 
           case "boolean": {
-            if (value !== "true" && value !== "false") {
+            if (value === true || value === "true") {
+              result[key] = true;
+            } else if (value === false || value === "false") {
+              result[key] = false;
+            } else {
               throw std.CreateError({
                 Key: key,
                 type: "INVALID_BOOLEAN",
@@ -274,7 +279,6 @@ export function validateEnv(
               });
             }
 
-            result[key] = value === "true";
             break;
           }
         }
