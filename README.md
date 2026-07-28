@@ -1,7 +1,7 @@
 # forgenv 🔥
 
 [![npm version](https://img.shields.io/npm/v/forgenv.svg?style=flat-square&color=cb3837)](https://www.npmjs.com/package/forgenv)
-[![CI](https://github.com/FikerTaddev/forgenv/actions/workflows/ci.yml/badge.svg)](https://github.com/FikerTaddev/forgenv/actions)
+[![CI](https://github.com/FikerTaddev/forgenv/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/FikerTaddev/forgenv/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/forgenv.svg?style=flat-square&color=blue)](LICENSE)
 ![dependencies](https://img.shields.io/badge/dependencies-0-success?style=flat-square)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue?style=flat-square&logo=typescript)
