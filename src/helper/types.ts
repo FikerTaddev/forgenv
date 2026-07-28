@@ -1,43 +1,55 @@
+// ---------------- PRIMITIVES ----------------
 export type PrimitiveType = string | boolean | number;
 export type ProtocolsType = "http" | "https" | "ftp";
 export type FormatType = "email" | "uuid" | "slug" | "ip" | "url";
+
+// ---------------- BASE ----------------
 type BaseField = {
   required?: boolean;
   length?: number;
+  sensitive?: boolean;
   sensetive?: boolean;
 };
 
-type EnumField<T extends readonly PrimitiveType[]> = BaseField & {
-  enum: T;
-  default?: T[number];
-  caseSensetive?: boolean;
-};
-
+// ---------------- FIELD DEFINITIONS ----------------
 type NumberField = BaseField & {
   type: "number";
   default?: number;
 };
+
 type StringField = BaseField & {
   type: "string";
   minLength?: number;
   maxLength?: number;
   default?: string;
 };
+
 type BooleanField = BaseField & {
   type: "boolean";
   default?: boolean;
 };
+
 type UrlField = BaseField & {
   type: "url";
   protocols?: ProtocolsType[];
   hostname?: string;
-  default?:URL;
+  default?: URL;
 };
+
 type FormatField = BaseField & {
   type: "format";
   format: FormatType;
-  default?:typeof String;
+  default?: typeof String;
 };
+
+type EnumField<T extends readonly PrimitiveType[]> = BaseField & {
+  enum: T;
+  default?: T[number];
+  caseSensitive?: boolean;
+  caseSensetive?: boolean;
+};
+
+// ---------------- UNION ----------------
 type EnvField =
   | StringField
   | NumberField
@@ -46,19 +58,25 @@ type EnvField =
   | FormatField
   | EnumField<readonly PrimitiveType[]>;
 
- export type InferField<T> =
+// ---------------- INFERENCE ----------------
+export type InferField<T> =
   T extends { enum: readonly (infer U)[] } ? U :
   T extends { type: "number" } ? number :
   T extends { type: "boolean" } ? boolean :
   T extends { type: "string" } ? string :
   T extends { default: infer D } ? D :
   string;
+
+export type InferSchema<T> = {
+  [K in keyof T]: InferField<T[K]>;
+};
+
+// ---------------- RESULT ----------------
 export type Result<T> =
   | { success: true; data: T }
   | { success: false; error: forgenvError };
-  export type InferSchema<T> = {
-    [K in keyof T ] :InferField<T[K]>
-  }
+
+// ---------------- ERRORS ----------------
 export type ErrorType =
   | "TYPE_MISMATCH"
   | "INVALID_NUMBER"
@@ -77,7 +95,6 @@ export type ErrorType =
   | "UNSAFE_IN_PRODUCTION"
   | "MISSING_PROD_REQUIRED_KEY"
   | "DEPRECATED_KEY"
-  | "INAVLID_URL"
   | "INVALID_SCHEMA";
 
 export type forgenvError = {
@@ -91,9 +108,8 @@ export type forgenvError = {
     file?: string;
     line?: number;
   };
-  rule?: string; //which schema rule triggered the error
+  rule?: string;
 };
 
+// ---------------- SCHEMA ----------------
 export type EnvSchema = Record<string, EnvField>;
-
-

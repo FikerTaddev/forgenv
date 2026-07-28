@@ -20,13 +20,13 @@ const command = args[0];
         break;
 
       default:
-        `console.log(
+        console.log(`
 forgenv CLI
 
 Commands:
   check   Validate environment
   init    Scaffold env setup
-`;
+`);
         process.exit(1);
     }
 

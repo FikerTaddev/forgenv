@@ -37,11 +37,12 @@ export function validateEnv(
     // ENUM VALIDATION
     // ========================
     if ("enum" in field) {
-      const allowed = field.caseSensetive
+      const isCaseSensitive = field.caseSensitive ?? field.caseSensetive;
+      const allowed = isCaseSensitive
         ? field.enum
         : field.enum.map((v) => String(v).toLowerCase());
 
-      const actual = field.caseSensetive ? value : normalize(value.toLowerCase());
+      const actual = isCaseSensitive ? value : normalize(value.toLowerCase());
       if (!allowed.includes(actual)) {
         throw std.CreateError({
           Key: key,
@@ -97,7 +98,6 @@ export function validateEnv(
               received: value,
             });
           }
-
           result[key] = value;
           break;
         }
@@ -228,9 +228,9 @@ export function validateEnv(
           result[key] = value === "true";
           break;
         }
+        
       }
     }
   }
-
   return result;
 }

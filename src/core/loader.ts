@@ -2,12 +2,12 @@ import fs from "fs";
 import path from "path";
 import { existsSync, readFileSync } from "fs";
 
-export function dotEnv(path: string) {
+export function dotEnv(filePath: string) {
   const env: Record<string, string> = {};
 
-  if (!existsSync(path)) return;
+  if (!existsSync(filePath)) throw new Error(`path ${filePath} doesnt exist`);
 
-  const file = readFileSync(path, "utf-8");
+  const file = readFileSync(filePath, "utf-8");
 
   for (const line of file.split("\n")) {
     const trimmed = line.trim();
@@ -25,18 +25,21 @@ export function dotEnv(path: string) {
 
   return env;
 }
+
 export function loadEnv(files: string[] = [".env"]) {
   const fileList = Array.isArray(files) ? files : [files];
-
-  const merged: Record<string, string> = {};
+  const merged: Record<string, any> = {};
 
   for (const file of fileList) {
-   
+    const resolved = path.isAbsolute(file)
+      ? file
+      : path.resolve(process.cwd(), file);
 
-    if (!fs.existsSync(file)) continue;
-   
-    const result = dotEnv(file);
+    if (!fs.existsSync(resolved)) {
+      throw new Error(`path ${resolved} doesnt exist`);
+    }
 
+    const result = dotEnv(resolved);
     Object.assign(merged, result);
   }
 
@@ -44,7 +47,9 @@ export function loadEnv(files: string[] = [".env"]) {
 }
 
 export async function loadSchema(schemaPath: string) {
-  const resolved = path.resolve(process.cwd(), schemaPath);
+  const resolved = path.isAbsolute(schemaPath)
+    ? schemaPath
+    : path.resolve(process.cwd(), schemaPath);
 
   try {
     const mod = await import(resolved);
