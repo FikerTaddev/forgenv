@@ -1,6 +1,6 @@
 {
   "name": "forgenv",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Zero-config, type-safe environment variable validation and expansion engine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
