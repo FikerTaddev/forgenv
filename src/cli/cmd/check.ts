@@ -1,12 +1,29 @@
 import fs from "fs";
 import path from "path";
 import { defineEnv } from "../../index.js";
-import { loadSchema, loadEnv } from "../../core/loader.js";
+import { loadSchema, dotEnv } from "../../core/loader.js";
 import { inferSchemaFromEnv } from "../../core/inferSchema.js";
 import type { EnvSchema } from "../../helper/types.js";
 
 export async function runCheck(flags: Record<string, string>) {
   const envFile = flags["env"] || ".env";
+  const resolvedEnvPath = path.isAbsolute(envFile)
+    ? envFile
+    : path.resolve(process.cwd(), envFile);
+
+  const envExists = fs.existsSync(resolvedEnvPath);
+  const examplePath = path.resolve(process.cwd(), ".env.example");
+  const exampleExists = fs.existsSync(examplePath);
+
+  if (!envExists) {
+    if (exampleExists) {
+      throw new Error(
+        `Environment file '${envFile}' does not exist.\n(Found '.env.example' - copy it to '${envFile}' to configure your variables).`,
+      );
+    }
+    throw new Error(`Environment file '${envFile}' does not exist.`);
+  }
+
   let schema: EnvSchema | undefined = undefined;
 
   if (flags["schema"]) {
@@ -33,17 +50,13 @@ export async function runCheck(flags: Record<string, string>) {
   }
 
   if (!schema) {
-    const resolvedEnv = path.resolve(process.cwd(), envFile);
-    if (!fs.existsSync(resolvedEnv)) {
-      throw new Error(`Environment file '${envFile}' does not exist.`);
+    let exampleEnv: Record<string, any> | undefined = undefined;
+    if (exampleExists) {
+      exampleEnv = dotEnv(examplePath);
     }
 
-    const rawEnv = loadEnv([envFile]);
-    let exampleEnv: Record<string, any> | undefined = undefined;
-    const examplePath = path.resolve(process.cwd(), ".env.example");
-    if (fs.existsSync(examplePath)) {
-      exampleEnv = loadEnv([".env.example"]);
-    }
+    const rawEnv = dotEnv(resolvedEnvPath);
+
     schema = inferSchemaFromEnv(rawEnv, exampleEnv);
   }
 
@@ -60,4 +73,3 @@ export async function runCheck(flags: Record<string, string>) {
 
   return result;
 }
-
