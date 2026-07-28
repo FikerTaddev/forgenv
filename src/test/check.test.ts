@@ -1,25 +1,29 @@
 import { describe, it, expect } from "vitest";
 import { runCheck } from "../cli/cmd/check.js";
-import path from "node:path";
+
 describe("runCheck", () => {
-  it("validates correct env successfully", async () => {
+  it("validates correct env successfully with explicit schema", async () => {
     const flags = {
       env: "src/test/.env.test",
-      schema: "src/test/test.schema.ts"
+      schema: "src/test/test.schema.ts",
     };
 
     await expect(runCheck(flags)).resolves.not.toThrow();
   });
 
-  it("throws if env flag is missing", async () => {
-    await expect(
-      runCheck({ schema: "/src/test/schema.ts" } as any)
-    ).rejects.toThrow("Missing --env flag");
+  it("auto-infers schema when schema flag is missing", async () => {
+    const flags = {
+      env: "src/test/.env.test",
+    };
+
+    const res = await runCheck(flags);
+    expect(res).toBeDefined();
+    expect(res.PORT).toBe(3000);
   });
 
-  it("throws if schema flag is missing", async () => {
+  it("throws error if env file does not exist", async () => {
     await expect(
-      runCheck({ env: "/src/test/.env" } as any)
-    ).rejects.toThrow("Missing --schema flag");
+      runCheck({ env: "non-existent-env-file.env" })
+    ).rejects.toThrow("Environment file 'non-existent-env-file.env' does not exist.");
   });
 });

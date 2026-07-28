@@ -1,12 +1,63 @@
-import { defineEnv } from "../../index.js"
-import { loadSchema } from "../../core/loader.js";
+import fs from "fs";
+import path from "path";
+import { defineEnv } from "../../index.js";
+import { loadSchema, loadEnv } from "../../core/loader.js";
+import { inferSchemaFromEnv } from "../../core/inferSchema.js";
+import type { EnvSchema } from "../../helper/types.js";
+
 export async function runCheck(flags: Record<string, string>) {
-  if (!flags["env"]) throw new Error("Missing --env flag");
-  if (!flags["schema"]) throw new Error("Missing --schema flag");
+  const envFile = flags["env"] || ".env";
+  let schema: EnvSchema | undefined = undefined;
 
+  if (flags["schema"]) {
+    schema = await loadSchema(flags["schema"]);
+  } else {
+    const candidateSchemas = [
+      "config/env.schema.ts",
+      "env.schema.ts",
+      "config/env.schema.js",
+      "env.schema.js",
+    ];
 
-  const schema = await loadSchema(flags["schema"]);
-  const env = flags["env"]
-  return defineEnv([env], schema);
+    for (const cand of candidateSchemas) {
+      const resolvedCand = path.resolve(process.cwd(), cand);
+      if (fs.existsSync(resolvedCand)) {
+        try {
+          schema = await loadSchema(cand);
+          break;
+        } catch {
+          // ignore
+        }
+      }
+    }
+  }
+
+  if (!schema) {
+    const resolvedEnv = path.resolve(process.cwd(), envFile);
+    if (!fs.existsSync(resolvedEnv)) {
+      throw new Error(`Environment file '${envFile}' does not exist.`);
+    }
+
+    const rawEnv = loadEnv([envFile]);
+    let exampleEnv: Record<string, any> | undefined = undefined;
+    const examplePath = path.resolve(process.cwd(), ".env.example");
+    if (fs.existsSync(examplePath)) {
+      exampleEnv = loadEnv([".env.example"]);
+    }
+    schema = inferSchemaFromEnv(rawEnv, exampleEnv);
+  }
+
+  const result = defineEnv([envFile], schema);
+
+  console.log(`\n✔ Environment validation successful for [${envFile}]`);
+  for (const [k, v] of Object.entries(result)) {
+    const displayVal =
+      typeof v === "string" && k.toLowerCase().includes("secret")
+        ? "[REDACTED]"
+        : v;
+    console.log(`  • ${k}: ${displayVal}`);
+  }
+
+  return result;
 }
 
