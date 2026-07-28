@@ -1,6 +1,5 @@
 import type { forgenvError } from "../helper/types.js";
 import consola from "consola";
-import signale from "signale";
 
 export const std: any = {};
 
@@ -25,6 +24,5 @@ std.FormatError = (err: forgenvError): string => {
 };
 
 std.LogError = (err: forgenvError) => {
-  consola.error(std.FormatError(err));
-  signale.error(err.message);
+  consola.error(`${std.FormatError(err)}\n  ${err.message}`);
 };

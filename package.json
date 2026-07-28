@@ -44,13 +44,10 @@
   },
   "homepage": "https://github.com/FikerTaddev/forgenv#readme",
   "dependencies": {
-    "consola": "^3.4.2",
-    "forgenv": "^1.0.0",
-    "signale": "^1.4.0"
+    "consola": "^3.4.2"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
-    "@types/signale": "^1.4.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "vitest": "^4.1.2"
