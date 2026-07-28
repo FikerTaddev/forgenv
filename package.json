@@ -1,6 +1,6 @@
 {
   "name": "forgenv",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zero-config, type-safe environment variable validation and expansion engine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -45,6 +45,7 @@
   "homepage": "https://github.com/FikerTaddev/forgenv#readme",
   "dependencies": {
     "consola": "^3.4.2",
+    "forgenv": "^1.0.0",
     "signale": "^1.4.0"
   },
   "devDependencies": {
