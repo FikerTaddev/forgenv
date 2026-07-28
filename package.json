@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
+    "build": "tsc",
     "start": "ts-node index.ts"
   },
   "bin":{

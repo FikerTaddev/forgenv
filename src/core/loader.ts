@@ -26,6 +26,21 @@ export function dotEnv(filePath: string) {
   return env;
 }
 
+export function expandVariables(env: Record<string, any>): Record<string, any> {
+  const expanded: Record<string, any> = { ...env };
+  const varRegex = /\$\{([A-Za-z0-9_]+)\}/g;
+
+  for (const key in expanded) {
+    if (typeof expanded[key] === "string") {
+      expanded[key] = expanded[key].replace(varRegex, (_: string, varName: string) => {
+        return expanded[varName] ?? process.env[varName] ?? "";
+      });
+    }
+  }
+
+  return expanded;
+}
+
 export function loadEnv(files: string[] = [".env"]) {
   const fileList = Array.isArray(files) ? files : [files];
   const merged: Record<string, any> = {};
@@ -43,7 +58,7 @@ export function loadEnv(files: string[] = [".env"]) {
     Object.assign(merged, result);
   }
 
-  return merged;
+  return expandVariables(merged);
 }
 
 export async function loadSchema(schemaPath: string) {

@@ -9,11 +9,15 @@ type BaseField = {
   length?: number;
   sensitive?: boolean;
   sensetive?: boolean;
+  disallowDefaultInProduction?: boolean;
+  transform?: (val: any) => any;
 };
 
 // ---------------- FIELD DEFINITIONS ----------------
 type NumberField = BaseField & {
   type: "number";
+  min?: number;
+  max?: number;
   default?: number;
 };
 
@@ -21,6 +25,7 @@ type StringField = BaseField & {
   type: "string";
   minLength?: number;
   maxLength?: number;
+  regex?: RegExp | string;
   default?: string;
 };
 
