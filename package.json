@@ -1,6 +1,6 @@
 {
   "name": "forgenv",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Zero-config, type-safe environment variable validation and expansion engine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,7 @@
     "config"
   ],
   "author": "FikerTaddev",
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
   "bugs": {
     "url": "https://github.com/FikerTaddev/forgenv/issues"

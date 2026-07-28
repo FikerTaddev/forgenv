@@ -137,4 +137,4 @@ npx forgenv generate
 
 ## 📜 License
 
-ISC License © 2026
+MIT License © 2026 FikerTaddev
