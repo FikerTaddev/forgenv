@@ -1,26 +1,41 @@
 {
   "name": "forgenv",
   "version": "1.0.0",
-  "description": "",
+  "description": "Zero-config, type-safe environment variable validation and expansion engine",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
+  "bin": {
+    "forgenv": "dist/cli/index.js"
+  },
   "scripts": {
     "test": "npm run build && vitest run",
     "build": "tsc",
     "prepublishOnly": "npm run build && vitest run",
     "start": "ts-node index.ts"
   },
-  "bin": {
-    "forgenv": "dist/cli/index.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FikerTaddev/forgenv.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "env",
+    "dotenv",
+    "environment",
+    "validation",
+    "type-safe",
+    "schema",
+    "config"
+  ],
+  "author": "FikerTaddev",
   "license": "ISC",
   "type": "module",
   "bugs": {
